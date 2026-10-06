@@ -32,7 +32,7 @@ const assert = (c, m) => { console.log((c?'ok  - ':'FAIL: ')+m); if(!c) process.
   await p.tap('#gd [data-act="clockGo"]'); await p.evaluate(()=>{ S.block=5; S.clock.h1.acc = (1199.5 - (Date.now()-S.clock.h1.start)/1000)*1000; }); await p.waitForTimeout(1200);
   assert(await p.evaluate(()=>S.phase)==='ht', 'end of 1st half switches to Half-time');
   await p.tap('#gd [data-act="startH2"]'); await p.waitForTimeout(300);
-  assert((await p.textContent('#gd .gclock'))==='20:00' && (await p.textContent('#gd [data-act="clockGo"]')).includes('Start 2nd half'), '2nd half clock ready at 20:00');
+  assert((await p.textContent('#gd .gclock'))==='20:00' && (await p.getAttribute('#gd [data-act="clockGo"]','aria-label'))==='Start clock', '2nd half clock ready at 20:00');
   await p.tap('#gd [data-act="clockGo"]'); await p.waitForTimeout(300);
   await p.reload(); await p.waitForTimeout(800);
   assert(await p.evaluate(()=>clockRunning('h2')), 'clock keeps running after a refresh');
