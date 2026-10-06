@@ -590,6 +590,7 @@ svg .ball path{stroke:#6B3500;stroke-width:1.2;fill:none}
 .gd-row h2{flex:1;font-size:24px;font-weight:800;letter-spacing:1px;color:#fff;display:flex;align-items:center;gap:8px;min-width:0}
 .gd-row h2 .live{width:10px;height:10px;border-radius:50%;background:#3FD08A;box-shadow:0 0 0 4px rgba(63,208,138,.25);flex:none}
 .gd-row h2 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:420px){.gd-row h2{font-size:21px}.gd-clk{font-size:20px;padding:4px 8px}}
 .gd-row h2 small{font-family:var(--body);font-size:13px;color:#C9D7EE;font-weight:600;letter-spacing:0}
 .phase{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:rgba(255,255,255,.1);border-radius:12px;padding:4px;margin-top:6px}
 .phase button{min-height:44px;border-radius:9px;color:#C9D7EE;font-weight:800;font-size:13.5px;line-height:1.1}
@@ -598,6 +599,26 @@ svg .ball path{stroke:#6B3500;stroke-width:1.2;fill:none}
 .gd-in{max-width:820px;margin:0 auto;padding:4px 12px 24px;display:flex;flex-direction:column}
 .gd-sec{order:10}
 .gd-sec[hidden]{display:none}
+.clockw .gclock{font-family:var(--head);font-weight:800;font-size:68px;line-height:1;text-align:center;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:1px;margin:2px 0 4px}
+.clockw.run .gclock{color:var(--green)}
+.clockw .gclock.low{color:var(--red)}
+.clockw .ctl{display:grid;grid-template-columns:1fr 64px 64px 64px;gap:6px}
+.clockw .ctl .btn{min-height:58px;padding:6px}
+.clockw .ctl .adj{background:var(--bg);color:var(--navy);box-shadow:none;border:1.5px solid var(--line);font-size:15px}
+.clk-next{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;text-align:center;font-weight:700;font-size:15.5px;margin:4px 0 10px;color:var(--navy)}
+.clk-next .cd{font-family:var(--head);font-size:22px;background:var(--navy);color:var(--gold);border-radius:8px;padding:1px 9px;font-variant-numeric:tabular-nums}
+.clk-banner{border-radius:12px;padding:10px 12px;margin:0 0 10px;font-weight:800;text-align:center;font-size:17px}
+.clk-banner.warn{background:var(--gold-l);border:2px solid var(--gold);color:#5B3F00}
+.clk-banner.due{background:var(--red);color:#fff;animation:pulse 1s ease-in-out infinite}
+.clk-banner.due .btn{animation:none}
+.snd{min-height:40px;border-radius:10px;padding:0 10px;font-weight:800;font-size:13px;border:1.5px solid var(--line);background:#fff;color:var(--navy);display:inline-flex;align-items:center;gap:5px}
+.snd.off{color:var(--muted);text-decoration:line-through}
+.nextsub.due{box-shadow:0 0 0 4px var(--red);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(201,54,54,.45)}}
+.gd-clk{font-family:var(--head);font-weight:800;font-size:22px;font-variant-numeric:tabular-nums;color:#C9D7EE;background:rgba(255,255,255,.1);border-radius:10px;padding:4px 10px;min-height:40px;display:inline-flex;align-items:center;gap:6px}
+.gd-clk.run{color:#3FD08A}
+.gd-clk.due{background:var(--red);color:#fff}
+.gd-clk:empty{display:none}
 .gd-bar{flex:none;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:6px}
 .gd-bar button{flex:1;min-height:56px;border-radius:12px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:800;font-size:11.5px;color:var(--navy);text-transform:uppercase;letter-spacing:.3px}
 .gd-bar button .icon{color:var(--royal)}
@@ -1357,6 +1378,7 @@ svg .ball path{stroke:#6B3500;stroke-width:1.2;fill:none}
     <button class="btn gold" data-act="gdOpen"><svg class="icon s"><use href="#i-whistle"/></svg>Full-screen Game-Day Mode</button>
     <button class="btn ghost" data-print="p20"><svg class="icon s"><use href="#i-print"/></svg>Print cheat sheet</button>
   </div>
+  <div class="w clockw" data-w="clock"></div>
   <div data-w="lineup"></div>
   <div class="w" data-w="timeouts"></div>
   <div class="w"><div class="w-h"><h4>Coaching cues</h4><span class="meta">tap for detail</span></div><div data-w="cues"></div></div>
@@ -1389,6 +1411,7 @@ svg .ball path{stroke:#6B3500;stroke-width:1.2;fill:none}
   <div class="gd-top">
     <div class="gd-row">
       <h2><i class="live" aria-hidden="true"></i><span>GAME DAY <small id="gdOpp"></small></span></h2>
+      <button class="gd-clk" id="gdClk" data-act="toClock" aria-label="Game clock — jump to timer"></button>
       <button class="ib" data-act="notes" aria-label="Game notes"><svg class="icon"><use href="#i-notes"/></svg></button>
       <button class="ib" data-act="gdClose" aria-label="Exit Game-Day Mode"><svg class="icon"><use href="#i-x"/></svg></button>
     </div>
@@ -1402,6 +1425,7 @@ svg .ball path{stroke:#6B3500;stroke-width:1.2;fill:none}
   <div class="gd-body" id="gdBody"><div class="gd-in">
     <section class="gd-sec" data-sec="halftime"><div class="w" data-w="halftime"></div></section>
     <section class="gd-sec" data-sec="close"><div class="w" data-w="closegame"></div></section>
+    <section class="gd-sec" data-sec="clock"><div class="w clockw" data-w="clock"></div></section>
     <section class="gd-sec" data-sec="lineup"><div data-w="lineup"></div></section>
     <section class="gd-sec" data-sec="timeouts"><div class="w" data-w="timeouts"></div></section>
     <section class="gd-sec" data-sec="cues"><div class="w"><div class="w-h"><h4>Sideline cues</h4><span class="meta">one word · then let them play</span></div><div data-w="cues"></div></div></section>
@@ -2102,7 +2126,8 @@ const BLOCK = 200; /* 3:20 in seconds */
 /* ---------------- state ---------------- */
 const KEY = 'u12gameday.v1';
 const fresh = () => ({names:['','','','','',''], rest:[5,2,0,3,1,4, 1,4,3,0,2,5], block:0, avail:[1,1,1,1,1,1], to:{h1:2,h2:2}, phase:'h1',
-  fouls:[0,0,0,0,0,0], tired:[0,0,0,0,0,0], notes:{}, log:[], chk:{}, page:0, gd:false, ht:{start:0,acc:0}, close:'tied', seen:[0]});
+  fouls:[0,0,0,0,0,0], tired:[0,0,0,0,0,0], notes:{}, log:[], chk:{}, page:0, gd:false, ht:{start:0,acc:0}, close:'tied', seen:[0],
+  clock:{h1:{start:0,acc:0}, h2:{start:0,acc:0}, fired:[]}, sound:true});
 let S = fresh();
 try { const raw = localStorage.getItem(KEY); if(raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch(e){}
 let saveT = 0;
@@ -2305,9 +2330,122 @@ W.problems = el => {
     <div class="btnrow" style="margin-bottom:0">${p.t==='subs' ? `<button class="btn sm" data-go="5">${icon('swap')}Open subs</button>` : `<button class="btn sm" data-act="tactic" data-t="${p.t}">${icon('eye')}Show me</button>`}</div></div></div>`).join('');
 };
 
+/* =====================================================================
+   GAME CLOCK — 20:00 countdown per half, sub alerts with beeps
+   ===================================================================== */
+const HALF = 1200;
+const clockKey = () => S.phase === 'h1' ? 'h1' : 'h2';
+const clockLive = () => S.phase !== 'ht';
+function clockElapsed(k = clockKey()){ const c = S.clock[k]; return Math.min(HALF, Math.max(0, (c.acc + (c.start ? Date.now() - c.start : 0)) / 1000)); }
+function clockRunning(k = clockKey()){ return !!S.clock[k].start; }
+function subTiming(){
+  /* where the clock stands relative to the next planned sub in the current half */
+  const k = clockKey(), hi = k === 'h1' ? 0 : 1, e = clockElapsed(k), ns = nextSub();
+  if(!clockLive() || !ns || ns.half || Math.floor(S.block/6) !== hi) return null;
+  const at = ((S.block % 6) + 1) * BLOCK;
+  return {e, at, left: at - e, due: e >= at, warn: e >= at - 20 && e < at, ns};
+}
+let actx = null;
+function audioUnlock(){ try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if(actx.state === 'suspended') actx.resume(); } catch(e){} }
+function beep(n = 1, long = false){
+  if(!S.sound) return; audioUnlock(); if(!actx) return;
+  const t0 = actx.currentTime + .02, dur = long ? .45 : .16, gap = long ? .6 : .26;
+  for(let i=0;i<n;i++){
+    const o = actx.createOscillator(), g = actx.createGain(), t = t0 + i*gap;
+    o.type = 'square'; o.frequency.value = long ? 740 : 988;
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.35, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + .05);
+  }
+}
+function fire(key, fn){ if(S.clock.fired.includes(key)) return; S.clock.fired.push(key); save(); fn(); }
+function clockToggle(){
+  audioUnlock();
+  if(S.phase === 'ht'){ S.phase = 'h2'; if(S.block < 6) S.block = 6; }
+  const k = clockKey(), c = S.clock[k];
+  if(c.start){ c.acc += Date.now() - c.start; c.start = 0; }
+  else { if(clockElapsed(k) >= HALF) return toast('This half is over — reset the clock if needed');
+    const o = k === 'h1' ? 'h2' : 'h1'; if(S.clock[o].start){ S.clock[o].acc += Date.now() - S.clock[o].start; S.clock[o].start = 0; }
+    c.start = Date.now(); }
+  save(); renderAll(); vib(20);
+}
+function clockAdjust(d){ /* d = seconds added to the time remaining */
+  const k = clockKey(), c = S.clock[k], run = c.start ? Date.now() - c.start : 0;
+  c.acc = Math.min(HALF*1000 - run, Math.max(-run, c.acc - d*1000)); save(); clockLoop(true);
+}
+function clockSet(){
+  const k = clockKey(), cur = mmss(HALF - clockElapsed(k));
+  const v = prompt('Match the scoreboard — time left in this half (mm:ss):', cur); if(v === null) return;
+  const m = v.trim().match(/^(\d{1,2})(?::(\d{1,2}))?$/); if(!m) return toast('Use mm:ss, e.g. 14:32');
+  const secs = Math.min(HALF, (+m[1])*60 + (+(m[2]||0))), c = S.clock[k], run = c.start ? Date.now() - c.start : 0;
+  c.acc = (HALF - secs)*1000 - run; S.clock.fired = S.clock.fired.filter(f => !f.startsWith(k)); save(); clockLoop(true);
+}
+function clockReset(){
+  const k = clockKey(); S.clock[k] = {start:0, acc:0}; S.clock.fired = S.clock.fired.filter(f => !f.startsWith(k)); save(); renderAll();
+}
+W.clock = el => {
+  if(!el.dataset.built){
+    el.dataset.built = 1;
+    el.innerHTML = `<div class="w-h"><h4>${icon('whistle')}<span class="clk-title">Game clock</span></h4><button class="snd" data-act="sound"></button></div>
+      <div class="gclock" aria-live="off">20:00</div>
+      <div class="clk-banner" hidden></div>
+      <div class="clk-next"></div>
+      <div class="ctl"><button class="btn xl" data-act="clockGo"></button>
+        <button class="btn adj" data-act="clockAdj" data-d="-10" aria-label="Take 10 seconds off the clock">−10s</button>
+        <button class="btn adj" data-act="clockAdj" data-d="10" aria-label="Add 10 seconds to the clock">+10s</button>
+        <button class="btn adj" data-act="clockSet" aria-label="Set the clock to match the scoreboard">Set</button></div>
+      <p class="w-note">Start at tip-off; match the scoreboard with ±10s or Set. Final 2:00 of the 2nd half: pause at every whistle. <button class="linkbtn" data-act="clockReset">Reset half</button></p>`;
+  }
+  const k = clockKey(), run = clockRunning(k) && clockLive();
+  el.classList.toggle('run', run);
+  $('.clk-title', el).textContent = clockLive() ? `${k === 'h1' ? '1st' : '2nd'} half clock` : '2nd half clock';
+  $('[data-act="clockGo"]', el).innerHTML = run ? icon('stop') + 'Pause' : icon('play') + (clockElapsed(k) > 0 && clockLive() ? 'Resume' : (k === 'h1' ? 'Start 1st half' : 'Start 2nd half'));
+  const snd = $('[data-act="sound"]', el); snd.classList.toggle('off', !S.sound); snd.innerHTML = (S.sound ? '🔔 Beep on' : '🔕 Beep off'); snd.setAttribute('aria-pressed', String(S.sound));
+  clockPaint(el);
+};
+function clockPaint(el){
+  const k = clockKey(), e = clockLive() ? clockElapsed(k) : 0, left = HALF - e, st = subTiming();
+  const g = $('.gclock', el); g.textContent = mmss(left); g.classList.toggle('low', clockLive() && left <= 120 && e > 0);
+  const ban = $('.clk-banner', el), nx = $('.clk-next', el);
+  if(st && st.due){ ban.hidden = false; ban.className = 'clk-banner due'; ban.innerHTML = `<div>SUB NOW: ${esc(playerName(st.ns.inP))} ON for ${esc(playerName(st.ns.outP))}</div><button class="btn gold xl block" data-act="subDone" style="margin-top:8px">${icon('check')}Sub done</button>`; }
+  else if(st && st.warn){ ban.hidden = false; ban.className = 'clk-banner warn'; ban.textContent = `Get ${playerName(st.ns.inP)} to the table — sub in ${Math.ceil(st.left)}s`; }
+  else ban.hidden = true;
+  const ns = nextSub();
+  if(!clockLive()) nx.innerHTML = 'Half-time. Starting this clock starts the 2nd half.';
+  else if(st) nx.innerHTML = `Next sub at ${mmss(HALF - st.at)} <span class="cd">${st.due ? 'NOW' : mmss(st.left)}</span> ${esc(playerName(st.ns.inP))} ⇄ ${esc(playerName(st.ns.outP))}`;
+  else if(ns && ns.half) nx.innerHTML = `Next change at half-time: ${esc(playerName(ns.inP))} ⇄ ${esc(playerName(ns.outP))}`;
+  else if(!usePlan()) nx.textContent = 'No planned subs (not all six available).';
+  else nx.textContent = S.block >= 11 ? 'No more planned subs — finish strong!' : '';
+}
+function clockLoop(force){
+  const k = clockKey();
+  if(clockLive() && clockRunning(k)){
+    const e = clockElapsed(k), left = HALF - e, st = subTiming();
+    if(st && st.warn) fire(`${k}-w${S.block}`, () => { beep(2); vib(200); toast(`Get ${playerName(st.ns.inP)} ready — sub in 20s`); });
+    if(st && st.due) fire(`${k}-d${S.block}`, () => { beep(4, true); vib([300,150,300,150,300]); toast(`SUB NOW: ${playerName(st.ns.inP)} ON for ${playerName(st.ns.outP)}`); });
+    if(k === 'h1' && left <= 180 && left > 0) fire('h1-to', () => { beep(1); toast('3:00 left — no more timeouts this half'); });
+    if(k === 'h2' && left <= 300 && left > 120) fire('h2-5', () => { beep(1); toast('Final 5 minutes — tap "Final 5" for the close-game plan'); });
+    if(k === 'h2' && left <= 120 && left > 0) fire('h2-2', () => { beep(2); vib(300); toast('Final 2:00 — clock stops on every whistle. Pause at each whistle.'); });
+    if(left <= 0){
+      const c = S.clock[k]; c.acc = HALF*1000; c.start = 0; save();
+      fire(`${k}-end`, () => { beep(3, true); vib([500,200,500]);
+        if(k === 'h1'){ S.phase = 'ht'; save(); toast('End of the 1st half — half-time plan is up'); } else toast('Full time! Shake hands, then a 2-minute huddle.'); });
+      renderAll(); return;
+    }
+  } else if(!force) { paintClockChrome(); return; }
+  $$('[data-w="clock"]').forEach(el => { if(el.dataset.built) clockPaint(el); });
+  paintClockChrome();
+}
+function paintClockChrome(){
+  const st = subTiming(), due = !!(st && st.due), k = clockKey(), hc = $('#gdClk');
+  $$('.nextsub').forEach(n => n.classList.toggle('due', due));
+  if(hc){ const on = clockLive() && (clockRunning(k) || clockElapsed(k) > 0);
+    hc.textContent = on ? (clockRunning(k) ? '▶ ' : '❚❚ ') + mmss(HALF - clockElapsed(k)) : '';
+    hc.classList.toggle('run', clockLive() && clockRunning(k)); hc.classList.toggle('due', due); }
+}
+
 function renderAll(){
   $$('[data-w]').forEach(el => { const f = W[el.dataset.w]; if(f) f(el); });
-  renderTimeline(); renderGdChrome();
+  renderTimeline(); renderGdChrome(); paintClockChrome();
   DGS.forEach(d => d.key === 'roles' && d.refreshLabels());
 }
 function renderTimeline(){
@@ -2437,7 +2575,7 @@ function openTimeoutScript(){
       const c = $('#toClock'); if(!c){ clearInterval(toTimer); return; }
       c.textContent = mmss(left); c.classList.toggle('low', left <= 5);
       $$('.tseg', b).forEach((s,i) => { s.classList.toggle('now', e >= i*10 && e < (i+1)*10); s.classList.toggle('past', e >= (i+1)*10); $('.pbar', s).style.width = clamp01((e - i*10)/10)*100 + '%'; });
-      if(left <= 0){ clearInterval(toTimer); vib([60,60,60]); }
+      if(left <= 0){ clearInterval(toTimer); vib([60,60,60]); beep(2, true); }
     };
     tick(); toTimer = setInterval(tick, 200);
   };
@@ -2455,15 +2593,15 @@ function openPrintMenu(){
     <p class="small muted">Diagrams print with every step drawn on one court.</p>`);
 }
 function confirmNewGame(){
-  modal('Start a new game?', `<p>This clears the rotation, timeouts, fouls, game notes, half-time timer and checklist. <b>Your player names and sub plan order are kept.</b></p>
+  modal('Start a new game?', `<p>This clears the rotation, game clock, timeouts, fouls, game notes, half-time timer and checklist. <b>Your player names and sub plan order are kept.</b></p>
     <div class="btnrow"><button class="btn ghost" data-act="closeSheet">Cancel</button><button class="btn red" data-act="newGameYes">${icon('reset')}Yes, new game</button></div>`);
 }
 
 /* =====================================================================
    GAME-DAY MODE
    ===================================================================== */
-const ORDER = {h1:['lineup','timeouts','cues','reminders','players','notes'], h2:['lineup','timeouts','cues','reminders','players','notes'],
-  ht:['halftime','lineup','notes','timeouts','cues','reminders','players'], close:['close','lineup','timeouts','cues','reminders','players','notes']};
+const ORDER = {h1:['clock','lineup','timeouts','cues','reminders','players','notes'], h2:['clock','lineup','timeouts','cues','reminders','players','notes'],
+  ht:['halftime','lineup','notes','timeouts','cues','reminders','players'], close:['clock','close','lineup','timeouts','cues','reminders','players','notes']};
 let wakeLock = null;
 async function wake(on){
   try { if(on && 'wakeLock' in navigator && !wakeLock){ wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => wakeLock = null); }
@@ -2543,6 +2681,12 @@ document.addEventListener('click', e => {
     case 'delNote': S.log = S.log.filter(n => String(n.t) !== a.dataset.t); save(); renderAll(); break;
     case 'htGo': if(S.ht.start){ S.ht.acc += Date.now() - S.ht.start; S.ht.start = 0; } else { if(htElapsed() >= 120) S.ht = {start:0, acc:0}; S.ht.start = Date.now(); } save(); renderAll(); break;
     case 'htReset': S.ht = {start:0, acc:0}; save(); renderAll(); break;
+    case 'clockGo': clockToggle(); break;
+    case 'clockAdj': clockAdjust(+a.dataset.d); break;
+    case 'clockSet': clockSet(); break;
+    case 'clockReset': clockReset(); break;
+    case 'sound': S.sound = !S.sound; save(); renderAll(); if(S.sound){ audioUnlock(); beep(1); } break;
+    case 'toClock': { const c = $('#gd [data-w="clock"]'); if(c) c.scrollIntoView({behavior:'smooth', block:'start'}); else toast('No game clock during half-time'); break; }
     case 'startH2': if(S.block < 6) S.block = 6; S.phase = 'h2'; if(S.ht.start){ S.ht.acc += Date.now() - S.ht.start; S.ht.start = 0; } save(); renderAll();
       if(S.gd) $('#gdBody').scrollTop = 0; toast('2nd half — good luck!'); break;
     case 'close': S.close = a.dataset.k; save(); renderAll(); break;
@@ -2551,7 +2695,7 @@ document.addEventListener('click', e => {
     case 'copyNotes': copyNotes(); break;
     case 'printMenu': openPrintMenu(); break;
     case 'newGame': confirmNewGame(); break;
-    case 'newGameYes': { const keep = {names:S.names, rest:S.rest, page:S.page, seen:S.seen}; S = Object.assign(fresh(), keep); save(true);
+    case 'newGameYes': { const keep = {names:S.names, rest:S.rest, page:S.page, seen:S.seen, sound:S.sound}; S = Object.assign(fresh(), keep); save(true);
       $$('[data-chk]').forEach(c => c.checked = false); $$('[data-note]').forEach(f => f.value = ''); closeSheet(); renderAll(); toast('New game ready'); break; }
   }
 });
@@ -2650,7 +2794,8 @@ function buildToc(){
   const m = location.hash.match(/^#p(\d+)$/); if(m) cur = Math.min(N, Math.max(1, +m[1])) - 1;
   go(cur, false);
   if(location.hash === '#gameday' || S.gd) openGd();
-  setInterval(() => { if(S.ht.start){ $$('[data-w="halftime"]').forEach(htTick); if(htElapsed() >= 120){ S.ht = {start:0, acc:120000}; save(); renderAll(); vib([200,100,200]); toast('Half-time is over — start the 2nd half'); } } }, 250);
+  setInterval(() => { if(S.ht.start){ $$('[data-w="halftime"]').forEach(htTick); if(htElapsed() >= 120){ S.ht = {start:0, acc:120000}; save(); renderAll(); vib([200,100,200]); beep(3, true); toast('Half-time is over — start the 2nd half'); } } clockLoop(); }, 250);
+  document.addEventListener('pointerdown', audioUnlock, {once:true});
   if('serviceWorker' in navigator && location.protocol.startsWith('http')){
     navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).then(reg => {
       reg.update();

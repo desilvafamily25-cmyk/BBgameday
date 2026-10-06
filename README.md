@@ -9,6 +9,7 @@ It's a single self-contained web app (`index.html`). Open it by double-clicking 
 | | |
 |---|---|
 | **Game-Day Mode** | A full-screen courtside view: lineup, next sub with a big **Sub done** button, timeouts (2 → 1 → 0 per half), six cue buttons, offence/defence/transition reminders, fouls and fatigue per player, and quick notes. It has four phases (1st half, half-time, 2nd half, final 5 minutes), each of which reorders the screen. It keeps the screen awake where the browser supports it. |
+| **Game clock & sub beeps** | A 20:00 countdown for each half in Game-Day Mode and on the dashboard, with Start/Pause, ±10s and Set to match the scoreboard. It beeps and vibrates 20 seconds before each planned sub ("Get Ruby to the table") and again at sub time, when a **SUB NOW** banner with its own **Sub done** button appears. It also alerts at 3:00 left in the 1st half (no more timeouts), at the final 5:00 and final 2:00, and at the end of each half. The 1st-half buzzer switches to the half-time view. Tap 🔔 to mute. The clock keeps time even if the phone locks or the app reloads.
 | **Substitution rotation** | 12 blocks of ~3:20. Each player rests once per half (≈33:20 each). The second half is the first half reversed, so the starting five finishes the game. It tracks playing time, lets you edit who rests, marks players absent or injured, and has Undo and Reset. |
 | **20 swipeable chapters** | Swipe, use the arrows or the keyboard, or open the contents. A progress bar shows where you are, and the app reopens at the last page you visited. |
 | **Animated court diagrams** | An SVG half-court and full-court engine with step-by-step controls for players, passes, cuts, dribbles and defensive movement. Tap ⤢ to enlarge a diagram. It respects reduced-motion settings. |
@@ -44,6 +45,7 @@ The repo is ready for Netlify. `netlify.toml` sets the publish folder and the ca
 ```bash
 npm i -D playwright   # or use a global install
 node tests/workflow.test.js
+node tests/clock.test.js
 ```
 
 The test simulates a full game day on a 390 px touch phone and checks each step:
