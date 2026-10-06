@@ -22,9 +22,22 @@ All data is saved automatically in the browser's `localStorage` on that device. 
 
 The app summarises the EDJBA U12 D-grade quick rules: 2 × 20 min, 2 min half-time, 2 timeouts per half (none in the final 3:00 of the 1st half), the clock stops for all whistles in the final 2:00, a size 6 ball, an advanced foul line, the 5-second key, the inner 3-point line, the 20-point retreat rule (not in grading rounds 1–6), and **no zone defence**. Every defensive concept in the app is legal player-to-player defence.
 
-## Install as an app (optional)
+## Deploy to Netlify as an installable app (PWA)
 
-If you host the folder over HTTPS (for example GitHub Pages), browsers can install it as an app (PWA). `manifest.webmanifest` and `sw.js` provide the install and offline caching. Deep links work: `#gameday`, `#p5` (subs), `#p20` (dashboard).
+The repo is ready for Netlify. `netlify.toml` sets the publish folder and the cache headers, so there's no build step.
+
+1. Netlify → **Add new site → Import from Git**, then pick this repo and branch (or drag the folder onto app.netlify.com/drop).
+2. Leave the build command empty. `netlify.toml` already sets the publish directory to `.`.
+3. Open the site on a phone and install it:
+   - **Android (Chrome):** Install app.
+   - **iPhone (Safari):** Share → Add to Home Screen.
+
+**How updates and offline work:**
+- `sw.js` loads the app page from the network first, so installed phones get a new deploy on their next open. When there's no signal, it uses the last saved copy.
+- Netlify never caches `sw.js` (`no-cache` header), so phones always pick up a new service worker.
+- Coach data (names, rotation, notes) is stored on each phone in `localStorage` and survives updates.
+
+**Deep links:** `#gameday`, `#p5` (subs), `#p20` (dashboard). Android also offers these as home-screen shortcuts.
 
 ## Test
 

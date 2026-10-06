@@ -2651,7 +2651,12 @@ function buildToc(){
   go(cur, false);
   if(location.hash === '#gameday' || S.gd) openGd();
   setInterval(() => { if(S.ht.start){ $$('[data-w="halftime"]').forEach(htTick); if(htElapsed() >= 120){ S.ht = {start:0, acc:120000}; save(); renderAll(); vib([200,100,200]); toast('Half-time is over — start the 2nd half'); } } }, 250);
-  if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+    navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).then(reg => {
+      reg.update();
+      document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') reg.update(); });
+    }).catch(() => {});
+  }
 })();
 </script>
 </body>
